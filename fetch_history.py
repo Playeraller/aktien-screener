@@ -16,7 +16,10 @@ MCAP_FLOOR = 1e8
 
 def bt_universe():
     """Zugelassene Aktien ab 100 Mio. $ Boersenwert (ohne Obergrenze, um Gewinner nicht auszusortieren)."""
-    rows = json.load(open(os.path.join(DATA, "nasdaq_universe.json")))["data"]["rows"]
+    p = os.path.join(DATA, "nasdaq_universe.json")
+    if not os.path.exists(p):                      # frischer Container: Aktienliste erst laden
+        s.load_universe()
+    rows = json.load(open(p))["data"]["rows"]
     out = {}
     for r in rows:
         sym, mc = r["symbol"].strip(), num(r.get("marketCap")) or 0
