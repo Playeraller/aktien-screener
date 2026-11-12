@@ -1,4 +1,5 @@
-data/
+data/*
+!data/sec_meta.json
 __pycache__/
 *.pyc
 *.zip
