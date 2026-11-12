@@ -58,7 +58,7 @@ Zeitraum November 2021 bis November 2026, Abstand zum Durchschnitt der liquiden 
 | Depot aus A und A+ (`depot.py`) | schlägt den Markt in 4 von 9 Halbjahren, in den letzten drei nicht |
 
 Gründe für das schwache Depot: Die Signale kommen gehäuft in der Berichtssaison, dazwischen liegen im Schnitt
-56 % des Geldes ungenutzt herum. Der Vorteil hängt an wenigen großen Gewinnern, nur gut ein Drittel der Käufe
+rund 60 % des Geldes ungenutzt herum. Der Vorteil hängt an wenigen großen Gewinnern, nur gut ein Drittel der Käufe
 endet im Plus. Die Stufen wurden an denselben Daten gefunden, an denen sie gemessen wurden.
 
 ## Auftrag
