@@ -1,6 +1,7 @@
 """Daten fuer Ruecktest und Ausbruchs-Scanner laden (fortsetzbar, ueberspringt Vorhandenes).
 
-python3 fetch_history.py prices   5 Jahre Tageskurse (OHLCV) je Aktie -> data/hist/SYM.csv
+python3 fetch_history.py prices   10 Jahre Tageskurse (OHLCV) je Aktie -> data/hist/SYM.csv, dazu IWM und SPY
+python3 fetch_history.py etf      nur die Vergleichs-ETFs IWM und SPY -> data/etf/SYM.csv
 python3 fetch_history.py update   vorhandene Kurshistorie um die neuen Tage ergaenzen (woechentlich)
 python3 fetch_history.py sec      Ticker-Zuordnung + Termine der Quartalsmeldungen (8-K 2.02) -> data/sec_meta.json
 """
@@ -10,7 +11,10 @@ import screener as s
 
 HIST = os.path.join(DATA, "hist")
 os.makedirs(HIST, exist_ok=True)
-START = "2021-11-01"
+ETF = os.path.join(DATA, "etf")        # getrennt von den Aktien, damit die ETFs nicht im Kurs-Panel landen
+os.makedirs(ETF, exist_ok=True)
+ETFS = ("IWM", "SPY")
+START = "2016-11-01"                   # api.nasdaq.com reicht genau 10 Jahre zurueck
 MCAP_FLOOR = 1e8
 
 
@@ -29,10 +33,13 @@ def bt_universe():
     return out
 
 
-def _rows(sym, start):
+def _rows(sym, start, assetclass="stocks"):
+    """Tageszeilen ab start, aelteste zuerst. None, wenn der Abruf scheitert (dann spaeter erneut versuchen)."""
     j = get_json(f"https://api.nasdaq.com/api/quote/{sym}/historical",
-                 params={"assetclass": "stocks", "fromdate": start, "todate": datetime.date.today().isoformat(),
-                         "limit": 2500}, tries=3, timeout=60)
+                 params={"assetclass": assetclass, "fromdate": start, "todate": datetime.date.today().isoformat(),
+                         "limit": 3000}, tries=3, timeout=60)
+    if j is None:
+        return None
     try:
         rows = j["data"]["tradesTable"]["rows"] or []
     except (TypeError, KeyError):
@@ -46,17 +53,19 @@ def _rows(sym, start):
     return lines
 
 
-def _write(sym, lines):
-    p = os.path.join(HIST, f"{sym}.csv")
+def _write(sym, lines, folder=HIST):
+    p = os.path.join(folder, f"{sym}.csv")
     with open(p + ".tmp", "w") as f:
         f.write("date,open,high,low,close,volume\n" + "\n".join(lines) + "\n")
     os.replace(p + ".tmp", p)
 
 
-def fetch_prices(sym, start=START):
+def fetch_prices(sym, start=None):
     if os.path.exists(os.path.join(HIST, f"{sym}.csv")):
         return True
-    lines = _rows(sym, start)
+    lines = _rows(sym, start or START)      # START erst beim Aufruf lesen (weekly.py verkuerzt ihn)
+    if lines is None:                       # Abruf gescheitert: keine leere Datei, naechster Lauf holt nach
+        return False
     _write(sym, lines)
     return bool(lines)
 
@@ -91,11 +100,25 @@ def run_prices():
     syms = sorted(bt_universe())
     todo = [x for x in syms if not os.path.exists(os.path.join(HIST, f"{x}.csv"))]
     print(f"Kurshistorie: {len(todo)} von {len(syms)} zu laden", flush=True)
+    fail = 0
     with cf.ThreadPoolExecutor(8) as ex:
-        for i, _ in enumerate(ex.map(fetch_prices, todo), 1):
+        for i, ok in enumerate(ex.map(fetch_prices, todo), 1):
+            fail += not ok
             if i % 200 == 0:
                 print(f"  Kurse {i}/{len(todo)}", flush=True)
-    print("Kurshistorie fertig", flush=True)
+    left = [x for x in syms if not os.path.exists(os.path.join(HIST, f"{x}.csv"))]
+    print(f"Kurshistorie fertig: {len(todo) - fail} geladen, {fail} ohne Daten, {len(left)} Abrufe gescheitert "
+          f"(erneut starten holt sie nach)", flush=True)
+
+
+def run_etf():
+    """Vergleichswerte IWM und SPY (Kurse ohne Dividenden) immer frisch laden."""
+    for sym in ETFS:
+        lines = _rows(sym, START, "etf")
+        if lines:
+            _write(sym, lines, ETF)
+        print(f"ETF {sym}: {len(lines or [])} Tage" + (f", {lines[0][:10]} bis {lines[-1][:10]}" if lines else ""),
+              flush=True)
 
 
 def sec_one(c):
@@ -133,4 +156,4 @@ def run_sec():
 
 
 if __name__ == "__main__":
-    {"prices": run_prices, "sec": run_sec, "update": run_update}[sys.argv[1]]()
+    {"prices": lambda: (run_etf(), run_prices()), "etf": run_etf, "sec": run_sec, "update": run_update}[sys.argv[1]]()

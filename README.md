@@ -33,7 +33,8 @@ schreibt `output/ausbrueche.md`: alle Sprünge ≥ 10 % bei ≥ 3-fachem Volumen
 eingeordnet in die Stufen A+, A, – und Meiden. Die Stufen und ihre Rücktest-Werte stehen oben in `scan.py`.
 
 Fehlt `data/hist/` (neuer Container), vorher einmalig `python3 fetch_history.py prices` und
-`python3 fetch_history.py sec` laufen lassen (zusammen ca. 40 Minuten).
+`python3 fetch_history.py sec` laufen lassen. `prices` lädt 10 Jahre je Aktie sowie IWM und SPY
+(nach `data/etf/`) und überspringt Vorhandenes.
 
 ## Rücktest
 

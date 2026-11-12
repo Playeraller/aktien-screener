@@ -33,9 +33,14 @@ echtes Geld daran hängt.
 - `data/` ist nicht im Repository (außer `sec_meta.json`). In einem neuen Container zuerst laden:
   `python3 fetch_history.py prices` (ca. 45 bis 60 Minuten für rund 2.800 Aktien), danach baut
   `backtest.load_panel(rebuild=True)` die Kursmatrizen.
-- `api.nasdaq.com` liefert Tageskurse für 10 Jahre (geprüft: bis November 2016 zurück), auch für die ETFs
-  IWM und SPY mit `assetclass=etf`. Bisher wurden nur 5 Jahre geladen (`START` in `fetch_history.py`).
-  Kurse sind um Splits bereinigt, Dividenden fehlen.
+- `api.nasdaq.com` liefert Tageskurse für genau 10 Jahre rückwärts ab heute (am 12.11.2026: ab 11.11.2016,
+  2.513 Handelstage). Das Fenster wandert, ältere Tage sind später nicht mehr abrufbar. `START` in
+  `fetch_history.py` steht auf 2016-11-01, der Abruf holt bis zu 3.000 Zeilen (vorher 2.500, das schnitt ab).
+  Kurse sind um Splits bereinigt, Dividenden fehlen (auch bei IWM und SPY).
+- IWM und SPY liegen getrennt in `data/etf/` (`python3 fetch_history.py etf`, läuft bei `prices` mit), damit
+  sie nicht als Aktien im Kurs-Panel landen.
+- Scheitert ein Kursabruf, wird keine leere Datei mehr angelegt; `python3 fetch_history.py prices` erneut
+  starten holt nur die fehlenden Aktien nach. Protokoll des Downloads: `data/download.log`.
 - `data.sec.gov` liefert Bilanzdaten (Frames je Periode, `companyfacts` je Firma mit Meldedatum `filed`) und
   Termine der Quartalsmeldungen. Höchstens 10 Abrufe je Sekunde.
 - `www.sec.gov` weist das Skript ab, deshalb gibt es keine Insiderdaten. Yahoo antwortet oft mit 429.
@@ -102,3 +107,10 @@ Die Reihenfolge ist ein Vorschlag, die Liste darf vor dem Rechnen angepasst werd
 
 - 12. November 2026: Datei angelegt. Auftrag Schritt 1 ist offen. Nasdaq-Historie über 10 Jahre und ETF-Abruf
   sind mit je einem Abruf geprüft, ein vollständiger Download ab 2016 ist noch nicht gelaufen.
+- 12. November 2026, Sitzung 2: `fetch_history.py` auf 10 Jahre umgestellt, IWM und SPY geladen (je 2.513 Tage,
+  11.11.2016 bis 11.11.2026). Download der 2.831 Aktien als Hintergrundbefehl gestartet; ob er vollständig
+  durchlief, steht am Ende von `data/download.log` (in einem neuen Container neu starten). Nebenbei behoben:
+  `weekly.py` wollte in einem frischen Container nur 300 Tage laden, das griff wegen eines festen
+  Vorgabewerts nicht; jetzt greift es. Nächster Schritt: Kursmatrizen bauen und prüfen, dann Auftrag
+  Schritt 2 (`strategie.py`) mit den zwei Selbsttests des Rücktests (Zufallsauswahl muss beim Markt landen,
+  Auswahl mit Zukunftswissen muss unrealistisch gut sein), bevor irgendeine Hypothese gerechnet wird.
