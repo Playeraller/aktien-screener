@@ -60,3 +60,13 @@ und Übernahmen fehlen, die Ergebnisse sind deshalb eher zu günstig.
 
 Die Hosts müssen in der Netzwerkfreigabe der Umgebung stehen. Die Skripte melden sich mit einer
 ehrlichen Kennung als automatisches Skript; Browser-Kennungen vortäuschen ist nicht vorgesehen.
+
+## Rangfolge-Rücktest (Strategiesuche)
+
+```bash
+python3 strategie.py selbsttest
+```
+
+Prüft den Rücktest selbst, bevor eine Hypothese gerechnet wird: Zufallsauswahl (muss beim Markt landen) und
+Auswahl mit Zukunftswissen (muss unrealistisch gut sein). Ergebnis in `output/selbsttest.md`. Regeln und
+Festlegungen stehen in `UEBERGABE.md`.

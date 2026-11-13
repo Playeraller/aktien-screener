@@ -23,6 +23,8 @@ echtes Geld daran hängt.
 - `common.py`: Abruf mit Cache, Kurs-Helfer. `fetch_history.py`: Kurshistorie und SEC-Stammdaten laden.
 - `backtest.py`: Kursmatrizen (`load_panel`), Sprung-Ereignisse, SEC-Quartalsdaten, Rücktest beider Schienen.
 - `screener.py`: Qualitäts-Screener (5 Kriterien). `scan.py`: Ausbruchs-Scanner mit Stufen A+, A, –, Meiden.
+- `strategie.py`: monatlicher Rangfolge-Rücktest (Auftrag Schritt 2) mit Datenbereinigung, Prüfregeln und
+  Selbsttest (`python3 strategie.py selbsttest`, Ergebnis in `output/selbsttest.md`). Noch ohne Hypothesen.
 - `depot.py`: Depot-Simulation je Halbjahr. `weekly.py`: wöchentlicher Probelauf mit Protokoll in `protokoll/`.
 - `output/`: Berichte (`ruecktest.md`, `depot.md`, `ausbrueche.md`). `README.md`: Befehle.
 - Geplante Aufgabe „Aktien-Probelauf wöchentlich" (samstags 14:12 Uhr deutscher Zeit) ruft `weekly.py` auf.
@@ -90,6 +92,38 @@ endet im Plus. Die Stufen wurden an denselben Daten gefunden, an denen sie gemes
   auch ohne die drei besten Aktien je Periode noch im Plus gegenüber dem Markt, und im Abschlusstest nach
   Kosten vor beiden Vergleichen.
 
+## Festlegungen in `strategie.py` (getroffen vor der ersten Hypothese, danach nicht mehr ändern)
+
+- Stichtag ist der letzte Handelstag des Monats, Kauf und Verkauf zur Eröffnung des nächsten Handelstags.
+  Erster Kauf 1.12.2017 (früheste Kennzahl mit 12 Monaten Vorlauf), Ende 30.4.2025 zum Schlusskurs: 89 Monate.
+- 15 Halbjahre (Mai bis Oktober, November bis April), das erste ist kurz (Dezember 2017 bis April 2018).
+  „Zwei Drittel" heißt also mindestens 10 von 15, gemessen nach 0,4 % Kosten.
+- Kosten: 0,4 % für Kauf und Verkauf zusammen (wie `COST` in `backtest.py`), berechnet auf den tatsächlich
+  umgeschichteten Anteil; Stressrechnung mit 1,0 %. Markt und IWM laufen ohne Kosten.
+- „Ohne die drei besten Aktien je Periode": Periode = Halbjahr; entfernt werden je Halbjahr die drei Aktien mit
+  dem größten Beitrag, der Rest muss über den ganzen Zeitraum vor dem Markt liegen.
+- Liquide heißt am Stichtag: Kurs ≥ 3 $, 20-Tage-Umsatz im Mittel ≥ 1 Mio. $, an mindestens 15 der 20 Tage und
+  am Stichtag selbst gehandelt.
+- Datenbereinigung (`bereinige`): Kurssprünge über Faktor 20, die binnen 10 Tagen zurückkehren, gelten als
+  fehlend (z. B. LBTYA drei Tage lang 0,0001 $); bei Niveausprüngen über Faktor 20 nach oben ohne Rückkehr wird
+  die Historie davor verworfen. Echte Kursstürze bleiben drin. Unbereinigte Splits wurden nicht gefunden.
+- Im Entwicklungsmodus schneidet `Daten()` alle Kurse nach dem 30.4.2025 ab. Der Abschlusstest läuft nur über
+  `abschluss_freigabe(name)`, das jeden Lauf in `protokoll/abschlusstest.json` festhält und einen zweiten Lauf
+  derselben Strategie sowie einen vierten Finalisten verweigert.
+
+## Ergebnis des Selbsttests (Entwicklungszeitraum)
+
+- Markt (Durchschnitt der liquiden Aktien) +6,3 % pro Jahr, IWM +3,3 %, SPY +10,5 % (alle ohne Dividenden).
+  Der Markt liegt ohne jede Auswahl 3,0 Punkte pro Jahr vor IWM: „vor IWM" allein beweist nichts.
+- Zufallsauswahl von 10 % (500 Läufe): +6,2 bis +6,3 % pro Jahr vor Kosten, also beim Markt. 90 % der Läufe
+  liegen zwischen +4,2 und +8,5 %: Unterschiede bis etwa 2 Punkte pro Jahr sind Rauschen.
+- Monatlich komplett neu gemischt kostet der Umschlag 4,5 Punkte pro Jahr bei 0,4 % und 11 Punkte bei 1,0 %.
+- Auswahl mit Zukunftswissen: +1.365 % pro Jahr; mit nur einem Tag Vorsprung +68 %; dieselbe Kennzahl ohne
+  Vorsprung 0 %. Der Rücktest reagiert also auf ein Leck und zeigt ohne Leck nichts.
+- Härte der Hürden: Zufall schafft „10 von 15 Halbjahren vor Markt und IWM" in 0,8 % der Läufe, mit der
+  Regel „ohne die 3 besten" in keinem. Diese Regel allein kostet rund 4,1 Punkte pro Jahr. Eine Strategie
+  braucht also grob 4 Punkte pro Jahr Vorsprung nach Kosten, um zu bestehen.
+
 ## Hypothesen zum Start
 
 Die Reihenfolge ist ein Vorschlag, die Liste darf vor dem Rechnen angepasst werden.
@@ -114,3 +148,9 @@ Die Reihenfolge ist ein Vorschlag, die Liste darf vor dem Rechnen angepasst werd
   Vorgabewerts nicht; jetzt greift es. Nächster Schritt: Kursmatrizen bauen und prüfen, dann Auftrag
   Schritt 2 (`strategie.py`) mit den zwei Selbsttests des Rücktests (Zufallsauswahl muss beim Markt landen,
   Auswahl mit Zukunftswissen muss unrealistisch gut sein), bevor irgendeine Hypothese gerechnet wird.
+- 13. November 2026: Download vollständig (2.826 Aktien geladen, 5 ohne Daten, kein gescheiterter Abruf; Panel
+  2.513 Tage × 2.811 Aktien). Auftrag Schritt 2 erledigt: `strategie.py` gebaut, Daten bereinigt, Selbsttest
+  bestanden (siehe oben). Noch keine Hypothese gerechnet, der Abschlusszeitraum ist unberührt.
+  Nächster Schritt: Hypothesenliste endgültig festschreiben (höchstens 8, je höchstens 2 Varianten, mit Grund),
+  dann zuerst die reinen Kurs-Hypothesen 1 und 3 rechnen. Für 2, 4, 5, 6 und 8 fehlen noch Bilanzdaten mit
+  Meldedatum (`companyfacts` je Firma von `data.sec.gov`, rund 2.800 Abrufe als Hintergrundbefehl).
