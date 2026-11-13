@@ -84,6 +84,7 @@ class Daten:
         umsatz = (C * V).fillna(0)
         liq = ((C >= MIN_KURS) & (umsatz.rolling(20).mean() >= MIN_UMSATZ) & ((V > 0).rolling(20).sum() >= 15)
                & (V > 0)).values
+        self.umsatz20_tag = umsatz.rolling(20).mean().values
         start = TEST_START if abschluss else DEV_START
         T = len(self.tage) - 1
         # Stichtage s (Monatsende) mit Kauftag e = s + 1 im Zeitraum
@@ -97,6 +98,7 @@ class Daten:
         self.px0 = px0
         self.R = px1 / px0 - 1                         # Rendite je Periode, Eroeffnung bis Eroeffnung
         self.LIQ = liq[self.s] & np.isfinite(self.R)
+        self.umsatz20 = self.umsatz20_tag[self.s]
         self.R = np.nan_to_num(self.R)
         self.jahre = (datetime.date.fromisoformat(self.tage[T]) - datetime.date.fromisoformat(self.tage[self.e[0]])).days / 365.25
         # Halbjahre: Mai bis Oktober und November bis April, benannt nach dem ersten Monat
@@ -375,5 +377,79 @@ def kurs_hypothesen():
         print(z["name"], "| Abstand zum Markt je Halbjahr:", " ".join(f"{(a - m) * 100:+.0f}" for a, m in zip(z["hj"], z["hj_markt"])))
 
 
+def rang(x, ok):
+    """Rang je Periode als Anteil (0 bis 1) unter den zugelassenen Aktien, sonst NaN."""
+    out = np.full(x.shape, np.nan)
+    for k in range(x.shape[0]):
+        i = np.where(ok[k])[0]
+        if len(i) > 1:
+            out[k, i] = np.argsort(np.argsort(x[k, i])) / (len(i) - 1)
+    return out
+
+
+def bilanz_kennzahlen(D):
+    """Bilanz-Kennzahlen je Stichtag, zwischengespeichert (nur Entwicklungszeitraum)."""
+    import pickle, bilanz
+    p = os.path.join(DATA, "bilanz_abschluss.pkl" if D.abschluss else "bilanz_dev.pkl")
+    if os.path.exists(p):
+        return pickle.load(open(p, "rb"))
+    M = bilanz.kennzahlen(D)
+    pickle.dump(M, open(p, "wb"))
+    return M
+
+
+def bilanz_auswahlen(D):
+    """Auswahlmatrizen der Hypothesen 2, 4, 5, 6, 7 genau wie in UEBERGABE.md festgeschrieben."""
+    k, B = kurs_kennzahlen(D), bilanz_kennzahlen(D)
+    f = np.isfinite
+    oi, akt = B["oi_ttm"], B["akt_vj"]
+    with np.errstate(invalid="ignore", divide="ignore"):
+        solide = D.LIQ & f(oi) & f(akt) & (oi > 0)
+        ok4 = D.LIQ & f(oi) & (B["assets"] > 0) & (B["boerse"] > 0)
+        roa, rendite = oi / B["assets"], oi / B["boerse"]
+        ok4 &= np.abs(rendite) <= 1                     # Gewinn groesser als der Boersenwert: Datenfehler
+        ok4b = ok4 & (k["m12"] > 0)
+        ok5 = D.LIQ & f(B["d_wachs"]) & f(B["d_marge"])
+        s5 = np.where((B["d_wachs"] > 0) & (B["d_marge"] > 0),
+                      np.clip(B["d_wachs"], -1, 1) + np.clip(B["d_marge"], -1, 1), np.nan)
+        ok6 = D.LIQ & f(akt)
+        ok7 = D.LIQ & f(oi) & f(akt)
+        verlust_ab = (oi <= 0) & ~k["ueber200"]
+
+    def top_n(score, basis, ok):                        # so viele Aktien wie 10 % der Basis, nur aus `ok`
+        sel = np.zeros(basis.shape, bool)
+        for r in range(basis.shape[0]):
+            i = np.where(ok[r] & f(score[r]))[0]
+            n = max(1, int(round(0.10 * basis[r].sum())))
+            sel[r, i[np.argsort(-score[r, i], kind="stable")[:n]]] = True
+        return sel
+
+    return {"gruppe": ok7, "liste": [
+        ("2a Kursstärke, profitabel, Aktienzahl ≤ +2 %", top(k["m12"], solide & (akt <= 0.02), 0.10)),
+        ("2b Kursstärke, profitabel, Aktienzahl ≤ 0 %", top(k["m12"], solide & (akt <= 0), 0.10)),
+        ("4a Profitabel und günstig", top(rang(roa, ok4) + rang(rendite, ok4), ok4, 0.10)),
+        ("4b Profitabel und günstig, Kurs im Plus", top(rang(roa, ok4b) + rang(rendite, ok4b), ok4b, 0.10)),
+        ("5a Beschleunigung", top_n(s5, ok5, ok5)),
+        ("5b Beschleunigung, profitabel", top_n(s5, ok5 & (oi > 0), ok5 & (oi > 0))),
+        ("6a Stärkster Rückgang der Aktienzahl", top(-akt, ok6, 0.10)),
+        ("6b Rückkäufe ≥ 1 %, profitabel", solide & (akt <= -0.01)),
+        ("7a Ausschlussliste", ok7 & ~verlust_ab & ~(akt > 0.10)),
+        ("7b Ausschlussliste, ohne alle Verlustfirmen", ok7 & (oi > 0) & ~(akt > 0.10))]}
+
+
+def bilanz_hypothesen():
+    D = Daten()
+    A = bilanz_auswahlen(D)
+    g, _ = lauf(D, A["gruppe"])
+    print(f"Aktien mit Bilanzdaten je Monat: {A['gruppe'].sum(1).mean():.0f} von {D.LIQ.sum(1).mean():.0f} handelbaren. "
+          f"Ihr Durchschnitt: {pz(pa(D, g))} pro Jahr (Markt {pz(pa(D, lauf(D, D.LIQ)[0]))}).")
+    zs = [zeile(D, name, sel) for name, sel in A["liste"]]
+    print(tabelle(zs))
+    hg = halbjahre(D, g)
+    for z in zs:
+        print(z["name"], "| Abstand zum Markt je Halbjahr:", " ".join(f"{(a - m) * 100:+.0f}" for a, m in zip(z["hj"], z["hj_markt"])),
+              "| Halbjahre vor der Gruppe mit Bilanzdaten:", int((np.array(z["hj"]) > hg).sum()))
+
+
 if __name__ == "__main__":
-    {"selbsttest": selbsttest, "kurs": kurs_hypothesen}[sys.argv[1]]()
+    {"selbsttest": selbsttest, "kurs": kurs_hypothesen, "bilanz": bilanz_hypothesen}[sys.argv[1]]()
