@@ -25,6 +25,9 @@ echtes Geld daran hängt.
 - `screener.py`: Qualitäts-Screener (5 Kriterien). `scan.py`: Ausbruchs-Scanner mit Stufen A+, A, –, Meiden.
 - `strategie.py`: monatlicher Rangfolge-Rücktest (Auftrag Schritt 2) mit Datenbereinigung, Prüfregeln und
   Selbsttest (`python3 strategie.py selbsttest`, Ergebnis in `output/selbsttest.md`). Noch ohne Hypothesen.
+- `fetch_fundamentals.py`: Bilanzdaten mit Meldedatum je Firma (`data/facts/`), vorher erweiterte Zuordnung
+  Ticker → SEC-Nummer (`data/sec_meta_plus.json`, 2.500 von 2.831 Aktien). `bilanz.py`: daraus Kennzahlen je
+  Stichtag, nur Erstmeldungen ab Meldedatum, Aktienzahl splitbereinigt mit Gegenprobe.
 - `depot.py`: Depot-Simulation je Halbjahr. `weekly.py`: wöchentlicher Probelauf mit Protokoll in `protokoll/`.
 - `output/`: Berichte (`ruecktest.md`, `depot.md`, `ausbrueche.md`). `README.md`: Befehle.
 - Geplante Aufgabe „Aktien-Probelauf wöchentlich" (samstags 14:12 Uhr deutscher Zeit) ruft `weekly.py` auf.
@@ -178,3 +181,14 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   1b (6 Monate), 3a und 3b (52-Wochen-Hoch) fallen durch (je 7 von 15). Verbraucht: 4 Varianten.
   Bilanz-Download gestartet (`python3 fetch_fundamentals.py`, Ziel `data/facts/`, Protokoll `data/facts.log`).
   Nächster Schritt: Bilanz-Kennzahlen mit Meldedatum bauen und Hypothesen 2, 4, 5, 6, 7 rechnen.
+- 13. November 2026, Bilanz-Hypothesen: Zuordnung erweitert (vorher nur Firmen mit ≥ 10 Mio. $ Umsatz in
+  2024/25, das war eine versteckte Auswahl mit Zukunftswissen), Bilanzdaten für 2.480 Firmen geladen,
+  Abdeckung 79 % der handelbaren Aktien. Gerechnet mit `python3 strategie.py bilanz`: **alle 10 Varianten der
+  Hypothesen 2, 4, 5, 6, 7 fallen durch.** Am nächsten dran: 5a Beschleunigung (11 von 15 Halbjahren vorn,
+  +10,9 % pro Jahr, scheitert an „ohne 3 beste": +5,0 % gegen Markt +6,3 %) und 6b Rückkäufe (ohne 3 beste
+  +7,3 %, aber nur 7 von 15 Halbjahren). Profitabel und günstig (4a) liegt nur in 3 von 15 Halbjahren vorn.
+  Damit sind alle 14 Varianten verbraucht; einziger Finalist ist 1a Kursstärke 12 Monate.
+  In den Bilanz-Regeln zusätzlich festgelegt (vor der Rechnung): Gewinnrendite über 100 % und Börsenwert unter
+  zwei Tagesumsätzen gelten als Datenfehler; bei 5 werden beide Veränderungen auf ±100 Punkte begrenzt.
+  Nächster Schritt: Abschlusstest für 1a, genau einmal (`abschluss_freigabe`), danach Bericht
+  `output/strategie_suche.md` und Grafik Depotkurve gegen Markt (Skill dataviz).
