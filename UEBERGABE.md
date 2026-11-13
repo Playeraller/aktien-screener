@@ -28,6 +28,8 @@ echtes Geld daran hängt.
 - `fetch_fundamentals.py`: Bilanzdaten mit Meldedatum je Firma (`data/facts/`), vorher erweiterte Zuordnung
   Ticker → SEC-Nummer (`data/sec_meta_plus.json`, 2.500 von 2.831 Aktien). `bilanz.py`: daraus Kennzahlen je
   Stichtag, nur Erstmeldungen ab Meldedatum, Aktienzahl splitbereinigt mit Gegenprobe.
+- `grafik.py` (Depotkurve gegen Markt und IWM, `output/depotkurve.png` und `.csv`) und `bericht.py`
+  (`output/strategie_suche.md` aus den gespeicherten Ergebnissen): Abschlussarbeiten der Strategiesuche.
 - `depot.py`: Depot-Simulation je Halbjahr. `weekly.py`: wöchentlicher Probelauf mit Protokoll in `protokoll/`.
 - `output/`: Berichte (`ruecktest.md`, `depot.md`, `ausbrueche.md`). `README.md`: Befehle.
 - Geplante Aufgabe „Aktien-Probelauf wöchentlich" (samstags 14:12 Uhr deutscher Zeit) ruft `weekly.py` auf.
@@ -203,3 +205,12 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   +2.9 %. Größter Rückgang -32 %. Keine Nachbesserung, keine Wiederholung.
   Keine Kaufempfehlung. Nächster Schritt: Bericht `output/strategie_suche.md` (alle 14 Varianten, auch die
   gescheiterten) und Abschlussgrafik Depotkurve gegen Markt (Skill dataviz).
+- 13. November 2026, **Strategiesuche abgeschlossen.** Bericht `output/strategie_suche.md` mit allen 14 Varianten
+  (auch den gescheiterten), Grafik `output/depotkurve.png` (Skill dataviz, Palette validiert; Aqua hat
+  Kontrast 2,7:1, deshalb Endbeschriftungen plus CSV als Tabellenansicht). Ergebnis: **nichts Belastbares
+  gefunden.** 1a bestand den Abschlusstest formal (+51,0 % gegen Markt +47,4 %), aber knapp, bei 1,0 % Kosten
+  dahinter, Vorsprung aus einem Halbjahr, seit November 2025 klar hinter dem Markt. Keine Kaufempfehlung.
+  Der Abschlusszeitraum (ab 1.5.2025) ist verbraucht: neue Hypothesen brauchen neue, ungesehene Monate oder
+  andere Märkte. Der wöchentliche Probelauf läuft unverändert weiter. Offen und freiwillig: Pleiten und
+  Übernahmen in die Daten holen (Überlebensverzerrung), Dividenden ergänzen, Hypothese 1a nach einem weiteren
+  halben Jahr neuer Daten als reinen Beobachtungstest erneut ansehen (nicht als zweiten Abschlusstest).
