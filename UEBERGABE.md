@@ -237,3 +237,15 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   letzter Kauf Chevron am 30.10.2026. Seine zwei anderen wikifolios liegen bei +11,5 % seit 2/2024 und +0,2 %
   seit 11/2025. **Nicht sichtbar ohne Anmeldung: Trades (Kaufdaten), Kommentare, Kursverlauf.** Die Frage ist
   deshalb noch nicht beantwortet; ohne Kaufdaten lässt sich Können nicht von einer Rohstoffwette unterscheiden.
+- 13. November 2026, **Hypothese 8 festgeschrieben, noch nicht gerechnet** (Nutzer wollte nach dem wikifolio-Blick
+  wissen, ob es nach großen Tagesstürzen einen Trend gibt). Vorbehalte, die der Nutzer kennt: die Liste war als
+  endgültig festgelegt, dies ist die letzte erlaubte Hypothese (Obergrenze 8); der Zeitraum ab 1.5.2025 ist
+  verbraucht, also nur Beobachtung, keine Grundlage für Geld; fehlende Pleiten machen „nach dem Sturz kaufen"
+  zu günstig, glaubwürdig wäre nur ein Ergebnis „fällt weiter, meiden".
+  **8. Sturz-Ereignisse.** Grund: Nach schlechten Quartalszahlen reagieren Anleger zu langsam (Fortsetzung); ohne
+  Nachricht wird ein Teil der Überreaktion oft aufgeholt. Ereignis: Tagesverlust ≥ 10 % bei ≥ 3-fachem
+  20-Tage-Umsatz, Kurs des Vortags ≥ 3 $, 20-Tage-Umsatz ≥ 1 Mio. $. a) mit Quartalsmeldung (8-K 2.02) am selben
+  Tag oder Vortag, b) ohne. Messung: Kauf zur Eröffnung des Folgetags, Abstand zum Durchschnitt der liquiden
+  Aktien nach 5, 20 und 60 Handelstagen, 0,4 % Kosten, nur bis 30.4.2025, ohne Überlappung je Aktie.
+  Kurs-Download für diese Aufgabe als Hintergrundbefehl gestartet (`python3 fetch_history.py prices`, Protokoll
+  `data/download.log`). Nächster Schritt (mittel): Ereignisse zählen und rechnen, Ergebnis ehrlich berichten.
