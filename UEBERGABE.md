@@ -170,3 +170,11 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   Nächster Schritt: Hypothesenliste endgültig festschreiben (höchstens 8, je höchstens 2 Varianten, mit Grund),
   dann zuerst die reinen Kurs-Hypothesen 1 und 3 rechnen. Für 2, 4, 5, 6 und 8 fehlen noch Bilanzdaten mit
   Meldedatum (`companyfacts` je Firma von `data.sec.gov`, rund 2.800 Abrufe als Hintergrundbefehl).
+- 13. November 2026, später: Hypothesenliste festgeschrieben (7 Hypothesen, A+ und Meiden gestrichen).
+  Kurs-Hypothesen gerechnet (`python3 strategie.py kurs`, Zahlen in `output/strategie_ergebnisse.json`):
+  1a Kursstärke 12 Monate **besteht knapp** (+14,4 % pro Jahr nach 0,4 % Kosten gegen Markt +6,3 %, genau 10 von
+  15 Halbjahren vor beiden, ohne 3 beste +8,0 %). Vorbehalt: Vorsprung stammt vor allem aus 2020 bis 2022, in den
+  letzten 5 Halbjahren −12, +1, +7, +2, −2 Punkte; fehlende Pleiten begünstigen gerade diese Kennzahl.
+  1b (6 Monate), 3a und 3b (52-Wochen-Hoch) fallen durch (je 7 von 15). Verbraucht: 4 Varianten.
+  Bilanz-Download gestartet (`python3 fetch_fundamentals.py`, Ziel `data/facts/`, Protokoll `data/facts.log`).
+  Nächster Schritt: Bilanz-Kennzahlen mit Meldedatum bauen und Hypothesen 2, 4, 5, 6, 7 rechnen.

@@ -321,5 +321,59 @@ def selbsttest(laeufe=500):
     print(txt)
 
 
+# ---------------- Hypothesen ----------------
+ERG = os.path.join(OUT, "strategie_ergebnisse.json")
+
+
+def zeile(D, name, sel):
+    """Eine Ergebniszeile fuer eine Variante; wird in output/strategie_ergebnisse.json festgehalten."""
+    bw, bw10 = bewertung(D, sel), bewertung(D, sel, KOSTEN[1])
+    kv, _ = kurve(D, sel, KOSTEN[0])
+    z = {"name": name, "titel": round(bw["titel"]), "umschlag": bw["umschlag"], "pa": bw["pa"], "pa10": bw10["pa"],
+         "markt_pa": bw["markt_pa"], "iwm_pa": bw["iwm_pa"], "vorn": bw["vorn"], "noetig": bw["noetig"],
+         "n_hj": len(bw["hj"]), "ohne3_pa": bw["ohne3_pa"], "ohne3_ok": bool(bw["ohne3_ok"]),
+         "rueckgang": rueckgang(kv), "bestanden": bool(bw["bestanden"]),
+         "hj": [float(x) for x in bw["hj"]], "hj_markt": [float(x) for x in bw["hj_markt"]],
+         "hj_iwm": [float(x) for x in bw["hj_iwm"]], "hj_namen": D.hj_namen}
+    alle = json.load(open(ERG)) if os.path.exists(ERG) else {}
+    alle[name] = z
+    json.dump(alle, open(ERG, "w"), indent=1)
+    return z
+
+
+def tabelle(zs):
+    out = ["| Variante | Aktien | Umschlag je Monat | pro Jahr nach 0,4 % | nach 1,0 % | Markt | IWM | Halbjahre vor beiden | "
+           "ohne 3 beste pro Jahr | größter Rückgang | Urteil |", "|---|---|---|---|---|---|---|---|---|---|---|"]
+    for z in zs:
+        out.append(f"| {z['name']} | {z['titel']} | {z['umschlag'] * 100:.0f} % | {pz(z['pa'])} | {pz(z['pa10'])} | "
+                   f"{pz(z['markt_pa'])} | {pz(z['iwm_pa'])} | {z['vorn']} von {z['n_hj']} (nötig {z['noetig']}) | "
+                   f"{pz(z['ohne3_pa'])} | {pz(z['rueckgang'], 0)} | {'bestanden' if z['bestanden'] else 'durchgefallen'} |")
+    return "\n".join(out)
+
+
+def kurs_kennzahlen(D):
+    """Kennzahlen nur aus Kursen, je Stichtag. Alles endet am Schlusskurs des Stichtags."""
+    s = np.array(D.s)
+    Cf = D.Cf
+    alt = np.isfinite(Cf[s - 252])                      # mindestens 12 Monate Historie
+    hoch = np.vstack([np.nanmax(Cf[i - 251:i + 1], axis=0) for i in s])
+    return {"m12": np.where(alt, Cf[s - 21] / Cf[s - 252] - 1, np.nan),
+            "m6": np.where(alt, Cf[s - 21] / Cf[s - 126] - 1, np.nan),
+            "hoch": np.where(alt, Cf[s] / hoch, np.nan),
+            "ueber200": Cf[s] > np.vstack([np.nanmean(Cf[i - 199:i + 1], axis=0) for i in s])}
+
+
+def kurs_hypothesen():
+    D = Daten()
+    k = kurs_kennzahlen(D)
+    zs = [zeile(D, "1a Kursstärke 12 Monate", top(k["m12"], D.LIQ, 0.10)),
+          zeile(D, "1b Kursstärke 6 Monate", top(k["m6"], D.LIQ, 0.10)),
+          zeile(D, "3a Nähe zum 52-Wochen-Hoch, beste 10 %", top(k["hoch"], D.LIQ, 0.10)),
+          zeile(D, "3b Nähe zum 52-Wochen-Hoch, beste 20 %", top(k["hoch"], D.LIQ, 0.20))]
+    print(tabelle(zs))
+    for z in zs:
+        print(z["name"], "| Abstand zum Markt je Halbjahr:", " ".join(f"{(a - m) * 100:+.0f}" for a, m in zip(z["hj"], z["hj_markt"])))
+
+
 if __name__ == "__main__":
-    {"selbsttest": selbsttest}[sys.argv[1]]()
+    {"selbsttest": selbsttest, "kurs": kurs_hypothesen}[sys.argv[1]]()
