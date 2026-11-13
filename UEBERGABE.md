@@ -192,3 +192,14 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   zwei Tagesumsätzen gelten als Datenfehler; bei 5 werden beide Veränderungen auf ±100 Punkte begrenzt.
   Nächster Schritt: Abschlusstest für 1a, genau einmal (`abschluss_freigabe`), danach Bericht
   `output/strategie_suche.md` und Grafik Depotkurve gegen Markt (Skill dataviz).
+- 13. November 2026, **Abschlusstest für 1a Kursstärke 12 Monate gelaufen, genau einmal** (Sperre in
+  `protokoll/abschlusstest.json`, Zahlen in `output/abschlusstest.json`). 1.5.2025 bis 11.11.2026, 19 Monate, im
+  Schnitt 226 Aktien: Strategie **+51.0 %** nach 0,4 % Kosten, Markt +47.4 %, IWM
+  +44.6 %, SPY +35.6 %. Nach der Regel („nach Kosten vor beiden Vergleichen") **formal bestanden**,
+  aber knapp (+3.6 Punkte in 19 Monaten, Rauschen liegt bei ±2 Punkten pro Jahr) und mit
+  1,0 % Kosten +45.5 % gegen Markt +47.4 %: dann **hinter dem Markt**. Der ganze
+  Vorsprung stammt aus Mai bis Oktober 2025 (+56 % gegen +26 %). Seit 1.11.2025:
+  Strategie -3.5 %, Markt +17.4 %, IWM +15.0 %. Halbjahr Mai 2026: -15.6 % gegen Markt
+  +2.9 %. Größter Rückgang -32 %. Keine Nachbesserung, keine Wiederholung.
+  Keine Kaufempfehlung. Nächster Schritt: Bericht `output/strategie_suche.md` (alle 14 Varianten, auch die
+  gescheiterten) und Abschlussgrafik Depotkurve gegen Markt (Skill dataviz).

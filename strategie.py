@@ -451,5 +451,35 @@ def bilanz_hypothesen():
               "| Halbjahre vor der Gruppe mit Bilanzdaten:", int((np.array(z["hj"]) > hg).sum()))
 
 
+FINALIST = "1a Kursstärke 12 Monate"
+
+
+def abschluss_rechnung(D):
+    """Reine Rechnung fuer Finalist 1a auf den Daten von D (keine Sperre, keine Datei). Erfolg laut Regel:
+    Gesamtrendite nach 0,4 % Kosten vor Markt und IWM."""
+    sel = top(kurs_kennzahlen(D)["m12"], D.LIQ, 0.10)
+    r4, um = lauf(D, sel, KOSTEN[0])
+    r10, _ = lauf(D, sel, KOSTEN[1])
+    markt, _ = lauf(D, D.LIQ)
+    iwm, spy = D.etf["IWM"], D.etf["SPY"]
+    kv, _ = kurve(D, sel, KOSTEN[0])
+    return {"von": D.tage[D.e[0]], "bis": D.tage[-1], "monate": len(D.e), "titel": float(sel.sum(1).mean()),
+            "umschlag": float(um[1:].mean()), "strategie": gesamt(r4), "strategie_1pct": gesamt(r10),
+            "markt": gesamt(markt), "iwm": gesamt(iwm), "spy": gesamt(spy), "rueckgang": rueckgang(kv),
+            "strategie_pa": pa(D, r4), "markt_pa": pa(D, markt), "iwm_pa": pa(D, iwm),
+            "hj": dict(zip(D.hj_namen, halbjahre(D, r4))), "hj_markt": dict(zip(D.hj_namen, halbjahre(D, markt))),
+            "hj_iwm": dict(zip(D.hj_namen, halbjahre(D, iwm))),
+            "bestanden": bool(gesamt(r4) > gesamt(markt) and gesamt(r4) > gesamt(iwm))}
+
+
+def abschlusstest():
+    """EINMALIGER Abschlusstest fuer den Finalisten. Die Sperre wird vor der Rechnung gesetzt."""
+    abschluss_freigabe(FINALIST)
+    res = abschluss_rechnung(Daten(abschluss=True))
+    json.dump(res, open(os.path.join(OUT, "abschlusstest.json"), "w"), indent=1)
+    print(json.dumps(res, indent=1, ensure_ascii=False))
+
+
 if __name__ == "__main__":
-    {"selbsttest": selbsttest, "kurs": kurs_hypothesen, "bilanz": bilanz_hypothesen}[sys.argv[1]]()
+    {"selbsttest": selbsttest, "kurs": kurs_hypothesen, "bilanz": bilanz_hypothesen,
+     "abschluss": abschlusstest, "abschluss_probe": lambda: print(abschluss_rechnung(Daten()))}[sys.argv[1]]()
