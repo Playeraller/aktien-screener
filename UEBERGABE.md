@@ -33,6 +33,8 @@ echtes Geld daran hängt.
 - `grafik.py` (Depotkurve gegen Markt und IWM, `output/depotkurve.png` und `.csv`) und `bericht.py`
   (`output/strategie_suche.md` aus den gespeicherten Ergebnissen): Abschlussarbeiten der Strategiesuche.
 - `sturz.py`: Hypothese 8, Verlauf nach großen Tagesstürzen (`output/sturz.md`, `output/sturz.json`).
+- `THEORIE.md`: Theorie „Fakten vor Geschichten", Strategie (Kern Indexfonds, Aufsatz A+) und die vorab
+  festgelegten Regeln für die Auswertung des Probelaufs. Ohne neue Rechnung entstanden.
 - `depot.py`: Depot-Simulation je Halbjahr. `weekly.py`: wöchentlicher Probelauf mit Protokoll in `protokoll/`.
 - `output/`: Berichte (`ruecktest.md`, `depot.md`, `ausbrueche.md`). `README.md`: Befehle.
 - Geplante Aufgabe „Aktien-Probelauf wöchentlich" (samstags 14:12 Uhr deutscher Zeit) ruft `weekly.py` auf.
@@ -260,3 +262,19 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   zwischen „mit" und „ohne" Quartalszahlen nicht unterscheidbar. Der Zeitraum ab 1.5.2025 wurde nicht angesehen.
   Damit sind alle 8 Hypothesen verbraucht; keine weitere rechnen. Festgelegt beim Bauen (vor dem Ergebnis):
   Mindestabstand 60 Handelstage je Aktie, Unsicherheit über Monatsmittel.
+- 13. November 2026, **Theorie und Strategie aufgeschrieben, nichts gerechnet** (`THEORIE.md`). Auftrag des
+  Nutzers: eine Theorie und Strategie, wie mehr Wachstum als der Markt zu holen ist, ohne neue Rechnung, ohne
+  Wiederholung, ohne Nachbesserung. Ergebnis: Eine verlässliche Strategie gibt es nicht. Die einzige Stelle mit
+  einer Erklärung, wer den Vorsprung bezahlt, ist der Unterschied zwischen Sprüngen mit Quartalszahlen (A+, rund
+  +13 Punkte) und ohne (Meiden, rund −10 Punkte): „bei kleinen Aktien ist der Markt langsam mit Fakten und
+  schnell mit Geschichten". Strategie: Kern mindestens 80 % Indexfonds, Aufsatz höchstens 20 % nur A+ (2 % je
+  Kauf, höchstens 10 Positionen, 60 Handelstage, kein Stopp), Stufe A gehört nicht dazu. Eigene Einschätzung:
+  etwa eins zu drei, dass nach Kosten etwas bleibt. **Auswertung des Probelaufs vorab festgelegt** (vor dem
+  ersten abgeschlossenen 60-Tage-Fall, der Anfang Februar 2027 endet): Abstand zum Markt nach 60 Handelstagen
+  abzüglich 1,0 % Kosten, ohne Stopp, alle A+-Signale ab 3.11.2026; erste Auswertung nach 40 Fällen, zweite nach
+  80; verwerfen bei Durchschnitt ≤ 0; kleines echtes Geld erst bei ≥ +5 Punkten und ohne die drei besten Fälle
+  noch über 0; dazwischen weiter ohne Geld. Bis dahin keine Kaufempfehlung. Diese Regeln nicht mehr ändern,
+  sobald der erste Fall abgeschlossen ist. Nächster Schritt (leicht, nur auf „weiter"): `weekly.py` so ergänzen,
+  dass `protokoll/stand.md` A+ getrennt nach genau dieser Messgröße zeigt (Zahl abgeschlossener Fälle, Durchschnitt
+  nach 1,0 % Kosten, ohne die drei besten) und Meiden-Signale mitschreibt. Das ändert das Skript der geplanten
+  Aufgabe, deshalb nur mit Zustimmung des Nutzers.
