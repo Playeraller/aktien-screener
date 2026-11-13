@@ -216,3 +216,24 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   andere Märkte. Der wöchentliche Probelauf läuft unverändert weiter. Offen und freiwillig: Pleiten und
   Übernahmen in die Daten holen (Überlebensverzerrung), Dividenden ergänzen, Hypothese 1a nach einem weiteren
   halben Jahr neuer Daten als reinen Beobachtungstest erneut ansehen (nicht als zweiten Abschlusstest).
+- 13. November 2026, **Quelle für verschwundene Aktien geprüft** (nur wenige Abrufe, nichts Großes geladen, kein
+  Code geändert). Ohne Anmeldung gibt es keine: `api.nasdaq.com` meldet „Symbol not exists" (TWTR, SHLD), Yahoo
+  „may be delisted", Alpha Vantage mit Probeschlüssel liefert eine leere Liste, Stooq ist von diesem Container
+  nicht erreichbar (Verbindung bricht ab, also ungeprüft). Frei abrufbar ist nur die Tiingo-Liste
+  (`https://apimedia.tiingo.com/docs/tiingo/daily/supported_tickers.zip`, 0,8 MB): 7.420 US-Aktien-Einträge mit
+  Kursende zwischen 11/2016 und 9/2026, davon 3.760 mit normalem Kürzel (3.052 mit mindestens einem Jahr Kursen).
+  Übernahmen stehen drin (TWTR bis 28.10.2022), Pleiten unter dem späteren Kürzel mit Q (BBBYQ, SHLDQ) samt der
+  Zeit nach dem Börsenrauswurf; einzelne fehlen (J.C. Penney, Frontier, Pier 1 nicht gefunden). Die Kurse selbst
+  brauchen einen kostenlosen Tiingo-Schlüssel (50 Abrufe je Stunde, 1.000 je Tag, eventuell nur 500 Aktien je
+  Monat, das ist unbestätigt) und sind deshalb ungetestet. **Der Nutzer will sich dort nicht anmelden.** Der Punkt
+  bleibt offen, die Überlebensverzerrung bleibt in allen Ergebnissen; nicht erneut vorschlagen, außer er fragt.
+- 13. November 2026, Nebenaufgabe: wikifolio „Unrecognized potential" (`wfunrecpot`, Trader TomKoehler) angesehen,
+  Frage des Nutzers: wie hat der Trader die Aktien vor den Kurssprüngen gefunden? Nur gelesen, was ein Besucher
+  ohne Anmeldung sieht (keine Registrierung durch das Skript, keine versteckten Abrufe). Sichtbar: Handelsidee
+  (kleine und mittlere Aktien, Finanzkennzahlen, RSI und SMA für den Einstieg, Management), Kennzahlen (+94,8 %
+  seit 24.6.2023, 1 Jahr −3,1 %, 1 Monat −20,0 %, Höchststand 341,0, Stand 194,9, also −43 % unter dem Hoch,
+  Schwankung 52,6 % pro Jahr, investiert 11.104 €), heutige Zusammensetzung (11 Aktien: 45 % in sechs kleinen
+  Bergbau- und Explorationsfirmen, davon 24 % allein Tectonic Metals; 49 % Öl, Tanker, Bohrinseln; 5 % Sea),
+  letzter Kauf Chevron am 30.10.2026. Seine zwei anderen wikifolios liegen bei +11,5 % seit 2/2024 und +0,2 %
+  seit 11/2025. **Nicht sichtbar ohne Anmeldung: Trades (Kaufdaten), Kommentare, Kursverlauf.** Die Frage ist
+  deshalb noch nicht beantwortet; ohne Kaufdaten lässt sich Können nicht von einer Rohstoffwette unterscheiden.
