@@ -124,18 +124,34 @@ endet im Plus. Die Stufen wurden an denselben Daten gefunden, an denen sie gemes
   Regel „ohne die 3 besten" in keinem. Diese Regel allein kostet rund 4,1 Punkte pro Jahr. Eine Strategie
   braucht also grob 4 Punkte pro Jahr Vorsprung nach Kosten, um zu bestehen.
 
-## Hypothesen zum Start
+## Hypothesen (endgültig festgeschrieben am 13.11.2026, vor der ersten Rechnung)
 
-Die Reihenfolge ist ein Vorschlag, die Liste darf vor dem Rechnen angepasst werden.
+Immer: monatlich, beste 10 % der handelbaren Aktien mit gültiger Kennzahl, gleich gewichtet (außer wo anders
+angegeben). Bilanz-Hypothesen laufen nur auf den rund 2.170 Aktien mit SEC-Zuordnung, Werte zählen ab `filed`.
 
-1. Kursstärke: beste 10 % nach 12-Monats-Rendite ohne den letzten Monat.
-2. Kursstärke nur unter profitablen Firmen ohne Aktienverwässerung.
-3. Nähe zum 52-Wochen-Hoch.
-4. Profitabel und günstig: Rang nach operativem Gewinn je Vermögen plus Rang nach Gewinnrendite.
-5. Beschleunigung: Umsatzwachstum steigt und Marge weitet sich aus.
-6. Sinkende Aktienzahl (Rückkäufe) gegen steigende Aktienzahl.
-7. A+ als Beimischung zu einem Markt-Depot statt als eigenes Depot.
-8. Ausschlussliste: Markt ohne „Meiden"-Fälle, starke Verwässerer und Verlustfirmen im Abwärtstrend.
+1. **Kursstärke.** Grund: Anleger reagieren zu langsam auf gute Nachrichten, Trends laufen weiter.
+   a) Rendite der letzten 12 Monate ohne den letzten Monat. b) dasselbe über 6 Monate ohne den letzten Monat.
+2. **Kursstärke nur bei soliden Firmen.** Grund: Trends bei Verlustfirmen und Verwässerern brechen öfter ab.
+   a) Kennzahl 1a, nur Firmen mit positivem operativem Gewinn (letzte 4 Quartale) und Aktienzahl höchstens
+   +2 % zum Vorjahr. b) wie a, aber Aktienzahl nicht gestiegen (≤ 0 %).
+3. **Nähe zum 52-Wochen-Hoch.** Grund: Anleger zögern, über alte Höchstkurse zu kaufen, Kurse laufen nach.
+   a) Schlusskurs geteilt durch höchsten Schlusskurs der letzten 252 Tage, beste 10 %. b) beste 20 %.
+4. **Profitabel und günstig.** Grund: gute Firmen zu niedrigen Preisen werden unterschätzt.
+   a) Rang nach operativem Gewinn je Vermögen plus Rang nach operativem Gewinn je Börsenwert.
+   b) wie a, nur Aktien mit positiver Kennzahl 1a.
+5. **Beschleunigung.** Grund: der Markt schreibt altes Wachstum fort und unterschätzt Wendepunkte.
+   a) Umsatzwachstum zum Vorjahresquartal höher als im Quartal davor und operative Marge höher als im
+   Vorjahresquartal; Rang nach Summe beider Veränderungen. b) wie a, nur Firmen mit positivem operativem Gewinn.
+6. **Sinkende Aktienzahl.** Grund: Rückkäufe zeigen, dass die Firma Geld übrig hat und sich für günstig hält.
+   a) die 10 % mit dem stärksten Rückgang der Aktienzahl zum Vorjahr. b) alle Firmen mit Rückgang ≥ 1 % und
+   positivem operativem Gewinn.
+7. **Ausschlussliste.** Grund: Verlierer meiden ist leichter als Gewinner finden.
+   a) alle handelbaren Aktien ohne Verlustfirmen unter ihrem 200-Tage-Schnitt und ohne Firmen mit Aktienzahl
+   über +10 % zum Vorjahr. b) zusätzlich ohne alle Verlustfirmen.
+
+Gestrichen: „A+ als Beimischung" und der „Meiden"-Teil der Ausschlussliste. Beide Stufen wurden an Daten bis
+November 2026 gefunden, der Abschlusszeitraum ist für sie also schon verbraucht; ein sauberer Test ist nicht
+mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
 
 ## Stand
 
