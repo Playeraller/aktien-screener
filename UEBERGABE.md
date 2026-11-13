@@ -32,6 +32,7 @@ echtes Geld daran hängt.
   Stichtag, nur Erstmeldungen ab Meldedatum, Aktienzahl splitbereinigt mit Gegenprobe.
 - `grafik.py` (Depotkurve gegen Markt und IWM, `output/depotkurve.png` und `.csv`) und `bericht.py`
   (`output/strategie_suche.md` aus den gespeicherten Ergebnissen): Abschlussarbeiten der Strategiesuche.
+- `sturz.py`: Hypothese 8, Verlauf nach großen Tagesstürzen (`output/sturz.md`, `output/sturz.json`).
 - `depot.py`: Depot-Simulation je Halbjahr. `weekly.py`: wöchentlicher Probelauf mit Protokoll in `protokoll/`.
 - `output/`: Berichte (`ruecktest.md`, `depot.md`, `ausbrueche.md`). `README.md`: Befehle.
 - Geplante Aufgabe „Aktien-Probelauf wöchentlich" (samstags 14:12 Uhr deutscher Zeit) ruft `weekly.py` auf.
@@ -249,3 +250,13 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   Aktien nach 5, 20 und 60 Handelstagen, 0,4 % Kosten, nur bis 30.4.2025, ohne Überlappung je Aktie.
   Kurs-Download für diese Aufgabe als Hintergrundbefehl gestartet (`python3 fetch_history.py prices`, Protokoll
   `data/download.log`). Nächster Schritt (mittel): Ereignisse zählen und rechnen, Ergebnis ehrlich berichten.
+- 13. November 2026, **Hypothese 8 (Sturz-Ereignisse) gerechnet, einmal: durchgefallen.** `python3 sturz.py`,
+  Ergebnis in `output/sturz.md`. Bis 30.4.2025 gab es 6.850 Ereignisse; Quartalstermine liegen erst ab 6/2021 vor,
+  deshalb a) 2.250 mit und b) 1.125 ohne Quartalszahlen, der Rest nicht zuzuordnen. Abstand zum Markt nach 0,4 %
+  Kosten: a) −0,7 % / −1,0 % / −0,8 % nach 5 / 20 / 60 Tagen, b) +0,1 % / −0,7 % / −1,2 %; alle Stürze seit 2016
+  ungetrennt −1,0 % / −1,2 % / −0,9 %. Nur 43 bis 48 % der Fälle enden im Plus, kein Jahr klar positiv.
+  **Keine Erholung nach Stürzen, also kein Kaufsignal**, und wegen der fehlenden Pleiten ist die Wahrheit eher
+  noch schlechter. Als Meide-Signal ist der Effekt echt, aber klein (vor Kosten rund −0,6 % in 20 Tagen) und
+  zwischen „mit" und „ohne" Quartalszahlen nicht unterscheidbar. Der Zeitraum ab 1.5.2025 wurde nicht angesehen.
+  Damit sind alle 8 Hypothesen verbraucht; keine weitere rechnen. Festgelegt beim Bauen (vor dem Ergebnis):
+  Mindestabstand 60 Handelstage je Aktie, Unsicherheit über Monatsmittel.
