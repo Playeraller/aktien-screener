@@ -36,6 +36,8 @@ echtes Geld daran hängt.
 - `THEORIE.md`: Theorie „Fakten vor Geschichten", Strategie (Kern Indexfonds, Aufsatz A+) und die vorab
   festgelegten Regeln für die Auswertung des Probelaufs. Ohne neue Rechnung entstanden.
 - `depot.py`: Depot-Simulation je Halbjahr. `weekly.py`: wöchentlicher Probelauf mit Protokoll in `protokoll/`.
+  `protokoll/signale.csv` enthält A, A+ und Meiden; `protokoll/abgeschlossen.csv` hält jeden Fall nach 60
+  Handelstagen einmal fest (wird nie neu gerechnet); `protokoll/stand.md` zeigt A+ nach der festgelegten Messgröße.
 - `output/`: Berichte (`ruecktest.md`, `depot.md`, `ausbrueche.md`). `README.md`: Befehle.
 - Geplante Aufgabe „Aktien-Probelauf wöchentlich" (samstags 14:12 Uhr deutscher Zeit) ruft `weekly.py` auf.
   Nicht ändern, solange der Nutzer das nicht verlangt.
@@ -278,3 +280,16 @@ mehr möglich. Sie laufen weiter nur im wöchentlichen Probelauf ohne Geld.
   dass `protokoll/stand.md` A+ getrennt nach genau dieser Messgröße zeigt (Zahl abgeschlossener Fälle, Durchschnitt
   nach 1,0 % Kosten, ohne die drei besten) und Meiden-Signale mitschreibt. Das ändert das Skript der geplanten
   Aufgabe, deshalb nur mit Zustimmung des Nutzers.
+- 13. November 2026, **`weekly.py` ergänzt (mit Zustimmung des Nutzers), nichts an alten Daten gerechnet.**
+  `protokoll/stand.md` zeigt A+ jetzt getrennt: Zahl abgeschlossener 60-Tage-Fälle, Durchschnitt über Markt nach
+  1,0 % Kosten, derselbe Wert ohne die drei besten Fälle. Meiden-Signale werden mitgeschrieben (in der letzten
+  Suche vom 11.11. gab es keins, deshalb nichts nachgetragen). Die 23 alten Einträge in `signale.csv` sind
+  unverändert. Neu ist `protokoll/abgeschlossen.csv`: Der wöchentliche Lauf startet in einem frischen Container
+  mit nur rund 200 Handelstagen Kursen, ohne diese Datei wären abgeschlossene Fälle nach einigen Monaten wieder
+  aus der Auswertung gefallen, lange vor dem 40. Fall. Geprüft nur mit erfundenen Testkursen (Handrechnung stimmt,
+  Festgeschriebenes bleibt bei einem zweiten Lauf unverändert); der erste echte Lauf steht noch aus.
+  **Offene Lücke in den Regeln, vom Nutzer zu entscheiden, bevor der erste Fall Anfang Februar 2027 endet:** Was
+  zählt, wenn eine Aktie am Tag 60 keinen Kurs mehr hat (Übernahme, Börsenabgang)? Bisher steht dazu nichts in
+  `THEORIE.md`. Das Skript zeigt solche Fälle mit dem letzten Kurs an, rechnet sie aber nicht in den Durchschnitt.
+  Weglassen verzerrt (Pleiten fehlen dann). Vorschlag: letzter verfügbarer Kurs zählt.
+  Nächster Schritt (leicht): nach dem ersten Lauf mit dem neuen Skript `protokoll/stand.md` ansehen.
