@@ -15,6 +15,8 @@ echtes Geld daran hängt.
 - Antworten auf Deutsch, Anrede „du", kurz und ohne Fachjargon.
 - Credits sparen: nach jedem Schritt den nächsten Schritt mit Schwierigkeit nennen (leicht, mittel, schwer) und
   auf „weiter" warten. Keine Unteragenten. Lange Downloads als Hintergrundbefehl starten und nicht abfragen.
+- Nach jeder abgeschlossenen großen Aufgabe einen fertigen Prompt für einen neuen Chat ausgeben (spart
+  Tokens): Rolle, Repository, „lies UEBERGABE.md", die nächste Aufgabe. Vorher den Stand hier eintragen.
 - Kein Pull Request; direkt auf `main` committen und pushen.
 - Keine Kaufempfehlung mit echtem Geld, solange der Abschlusstest (unten) nicht bestanden ist.
 
